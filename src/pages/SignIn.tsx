@@ -35,7 +35,7 @@ function SignIn() {
   }
 
   return (
-    <section className="flex flex-col h-screen justify-center items-center gap-5 bg-blue-500 text-gray-100">
+    <section className="flex flex-col h-screen justify-center items-center gap-5 bg-tertiary text-gray-100">
       <h2 className="text-lg">Already have an account? Please sign in!</h2>
       <form
         className="flex flex-col gap-5 text-gray-700"
@@ -59,7 +59,7 @@ function SignIn() {
           className="p-3 rounded-lg"
           onChange={handleOnChange}
         />
-        <Button type="submit" buttonType={BUTTON_TYPE_CLASSES.inverted}>          
+        <Button type="submit" buttonType={BUTTON_TYPE_CLASSES.base}>          
           Sign in
         </Button>
       </form>

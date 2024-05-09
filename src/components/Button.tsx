@@ -18,7 +18,7 @@ function BaseButton({
 }: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
-      className={cn("p-4 bg-blue-700 text-white rounded-lg", className)}  
+      className={cn("p-4 bg-primary text-white rounded-lg", className)}  
       onClick={onClick}
       type={type}
     >
@@ -35,7 +35,7 @@ function InvertedButton({
 }: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
-      className={cn("p-4 bg-blue-300 text-gray-700 rounded-lg",className)}
+      className={cn("p-4 bg-quaternary text-primary rounded-lg",className)}
       onClick={onClick}
       type={type}
     >
