@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export interface Product {
   productId: number;
   productName: string;
@@ -78,5 +80,25 @@ const products:Product[] = [
     quantity: 6,
   },
 ];
+
+
+export const addProductsToDB = async () => {
+    try {
+      for (const product of products) {
+        await axios.post('/product/add', product, {
+          headers: {
+            'Content-Type': 'application/json',
+            // Include any other headers if required
+          },
+        });
+      }
+      console.log('All products added successfully');
+    } catch (error) {
+      console.error('Error adding products:', error);
+    }
+  };
+  
+  
+
 
 export default products;

@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
-import axios from 'axios';
+import React, {createContext, useContext, useState} from "react";
+import axios from "axios";
 
 export interface CartItem {
   cartItemId: number;
@@ -13,26 +13,48 @@ export interface CartItem {
 
 interface ShoppingCartContextType {
   cartItems: CartItem[];
-  addItemToCart: (productId: number) => void;
+  addItemToCart: (productId: number, userId: number) => void;
   deleteItemFromCart: (cartItemId: number) => void;
   clearItem: (cartItemId: number) => void;
 }
 
-const ShoppingCartContext = createContext<ShoppingCartContextType | undefined>(undefined);
+const ShoppingCartContext = createContext<ShoppingCartContextType | undefined>(
+  undefined
+);
 
 export const useShoppingCart = (): ShoppingCartContextType => {
-  const context = useContext(ShoppingCartContext);
-  if (!context) {
-    throw new Error('useShoppingCart must be used within a ShoppingCartProvider');
-  }
-  return context;
-};
+    const context = useContext(ShoppingCartContext);
+    if (!context) {
+      throw new Error('useShoppingCart must be used within a ShoppingCartProvider');
+    }
+    return context;
+  };
 
-const ShoppingCartProvider: React.FC = ({ children }) => {
+const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  const addItemToCart = (productId: number) => {
-    // Logic to add item to cart
+  const addItemToCart = async (productId: number, userId: number) => {
+    try {
+      const response = await axios.post(
+        `/cart/add`,
+        {
+          userId: userId,
+          productId: productId,
+          quantity: 5,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            // Include any authorization headers or other required headers
+          },
+        }
+      );
+      console.log(response.data)
+      // Update the local state with the updated cart items from the response
+    //   setCartItems(response.data.cartItems); // Assuming the response returns the updated cart items
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
   };
 
   const deleteItemFromCart = (cartItemId: number) => {
@@ -44,7 +66,9 @@ const ShoppingCartProvider: React.FC = ({ children }) => {
   };
 
   return (
-    <ShoppingCartContext.Provider value={{ cartItems, addItemToCart, deleteItemFromCart, clearItem }}>
+    <ShoppingCartContext.Provider
+      value={{cartItems, addItemToCart, deleteItemFromCart, clearItem}}
+    >
       {children}
     </ShoppingCartContext.Provider>
   );
