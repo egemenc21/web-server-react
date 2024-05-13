@@ -32,6 +32,7 @@ interface ShoppingCartContextType {
   deleteItemFromCart: (cartItemId: number) => void;
   clearItem: (cartItemId: number) => void;
   clearShoppingCart: (cartId: number) => Promise<void>;
+  itemQuantity: number
 }
 
 const ShoppingCartContext = createContext<ShoppingCartContextType | undefined>(
@@ -51,6 +52,7 @@ export const useShoppingCart = (): ShoppingCartContextType => {
 const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [shoppingCartId, setShoppingCartId] = useState<number>();
+  const [itemQuantity, setQuantity] = useState(0);
 
   const fetchShoppingCart = async (userId: number) => {
     try {
@@ -111,6 +113,7 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
     } catch (error) {
       console.error("Error adding item to cart:", error);
     }
+    setQuantity(itemQuantity + 1);
   };
 
   const deleteItemFromCart = (cartItemId: number) => {
@@ -144,6 +147,7 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
         deleteItemFromCart,
         clearItem,
         clearShoppingCart,
+        itemQuantity
       }}
     >
       {children}

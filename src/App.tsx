@@ -6,11 +6,9 @@ import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 
 
-
 function App() {
   axios.defaults.baseURL = "http://localhost:8080";
   axios.defaults.withCredentials = true;
-
 
 // const user = {
 //   username: 'john_doe',

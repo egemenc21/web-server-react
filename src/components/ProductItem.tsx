@@ -9,13 +9,21 @@ interface ProductItemProps {
 function ProductItem({product}: ProductItemProps) {
   const testUserId = 1;
   const {addItemToCart} = useShoppingCart();
-  const {productId, productName, description, quantity, price} = product;
+  const {productId, productName, description, quantity, price, imageUrl} =
+    product;
   return (
-    <li className="w-[30%] p-4 shadow-md">
-      <div>{productName}</div>
-      <div>{description}</div>
-      <div>{quantity}</div>
-      <div>{price}</div>
+    <li className="w-[23%] p-4 shadow-md">
+      <div className="relative w-[300px] h-[300px]">
+        <img
+          className="object-cover  w-full h-full"
+          src={`http://localhost:8080/images/${imageUrl}`}
+          alt="image"
+        />
+      </div>
+      <div className="mt-4">Name: {productName}</div>
+      <div>Description: {description}</div>
+      <div>Quantity: {quantity}</div>
+      <div> Price: {price}</div>
       <div className="flex justify-center p-1">
         <Button
           buttonType={BUTTON_TYPE_CLASSES.base}
