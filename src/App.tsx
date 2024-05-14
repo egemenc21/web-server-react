@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import Register from "./pages/Register";
 import {useEffect} from "react";
+import Checkout from "./pages/Checkout";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:8080";
@@ -24,9 +25,10 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<SignIn />} />
-        <Route path="/dashboard" element={<Home />} />
+        {/* <Route path="/dashboard" element={<Home />} /> */}
         <Route path="/shop" element={<Shop />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </>
   );

@@ -33,7 +33,7 @@ function Register() {
 
   useEffect(() => {
     if (userData && userData.id) {
-      navigate("/dashboard");
+      navigate("/shop");
     }
   }, [userData, navigate]);
 
@@ -48,8 +48,6 @@ function Register() {
     localStorage.setItem("token", data.token);
 
     const decodedToken: JwtPayload = jwtDecode(data.token);
-
-    console.log(decodedToken);
 
     setUserData({
       id: decodedToken.id,

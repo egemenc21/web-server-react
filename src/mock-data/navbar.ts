@@ -4,8 +4,9 @@ export interface NavbarLinkProps {
   }
   
   const navbarLinks: NavbarLinkProps[] = [
-    { title: "Home", href: "/dashboard" },
+    // { title: "Home", href: "/dashboard" },
     { title: "Shop", href: "/shop" },
+    { title: "Checkout", href: "/checkout" },
   ];
   
   export default navbarLinks;

@@ -21,7 +21,7 @@ function SignIn() {
   useEffect(() => {
     console.log(userData, "signinpage");
     if (userData) {
-      navigate("/dashboard");
+      navigate("/shop");
     }
   }, [userData]);
 
@@ -39,9 +39,11 @@ function SignIn() {
       const decodedToken: JwtPayload = jwtDecode(token);
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-      axios.get(`/user/${decodedToken.id}` ).then((response) => {
-        setUserData(response.data);
-        console.log(response.data);
+      axios.get(`/user/${decodedToken.id}`).then((response) => {
+        const userData = response.data;
+        userData.id = userData.userId; 
+        setUserData(userData);
+      
       });
     }
     console.log(data);

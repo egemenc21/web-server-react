@@ -23,14 +23,12 @@ function ProductItem({product}: ProductItemProps) {
       </div>
       <div className="mt-4">Name: {productName}</div>
       <div>Description: {description}</div>
-      <div>Quantity: {quantity}</div>
       <div> Price: {price}</div>
       <div className="flex justify-center p-1">
         <Button
           buttonType={BUTTON_TYPE_CLASSES.base}
           onClick={() => addItemToCart(productId)}
         >
-          {" "}
           Add to Shopping Cart
         </Button>
       </div>

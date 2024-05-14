@@ -1,13 +1,16 @@
+import { useNavigate } from "react-router-dom";
 import {useShoppingCart} from "../context/ShoppingCart";
 import Button, {BUTTON_TYPE_CLASSES} from "./Button";
 
 function ShoppingCart() {
+  const navigate = useNavigate()
   const {cartItems, shoppingCartId, clearShoppingCart} = useShoppingCart();
   console.log(cartItems, "shopping cart component");
 
   const handleDelete = async () => {
     if (shoppingCartId) clearShoppingCart(shoppingCartId);
   };
+
   return (
     <div className="fixed right-[2%] top-[10%] w-[250px] min-h-[350px] bg-secondary">
       <div className="p-2 text-[#000000] text-center">ShoppingCart</div>
@@ -43,7 +46,7 @@ function ShoppingCart() {
 
         <Button
           buttonType={BUTTON_TYPE_CLASSES.base}
-          onClick={handleDelete}
+          onClick={()=> navigate('/checkout')}
         >
           Go to checkout
         </Button>

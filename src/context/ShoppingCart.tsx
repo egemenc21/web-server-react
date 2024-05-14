@@ -126,9 +126,18 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
     setQuantity(itemQuantity + 1);
   };
 
-  const deleteItemFromCart = (cartItemId: number) => {
-    // Logic to delete item from cart
+  const deleteItemFromCart = async (cartItemId: number) => {
+    try {
+      await axios.delete(`/cart-item/delete/${cartItemId}`);
+      // Update the local state to remove the deleted item from cartItems
+      setCartItems((prevCartItems) =>
+        prevCartItems.filter((item) => item.cartItemId !== cartItemId)
+      );
+    } catch (error) {
+      console.error("Error deleting item from cart:", error);
+    }
   };
+  
 
   const clearItem = (cartItemId: number) => {
     // Logic to clear item from cart
