@@ -90,7 +90,7 @@ export const addProductsToDB = async () => {
       await axios.post("/product/add", product, {
         headers: {
           "Content-Type": "application/json",
-          // Include any other headers if required
+        
         },
       });
     }
@@ -106,7 +106,7 @@ export const updateProductsOnDB = async () => {
       await axios.put(`/product/${product.productId}`, product, {
         headers: {
           "Content-Type": "application/json",
-          // Include any other headers if required
+  
         },
       });
     }

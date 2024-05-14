@@ -6,12 +6,14 @@ import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../context/User";
 import { useNavigate } from "react-router-dom";
 
-// interface ShopProps {}
+
 
 function Shop() {
   const [products, setProducts] = useState<Product[]>([]);
   const {userData} = useContext(UserContext);
   const navigate = useNavigate()
+
+  console.log(userData, "shop")
   useEffect(() => {
     if (userData) {
       fetchData();
@@ -35,7 +37,7 @@ function Shop() {
     <>
       <Navbar />
       <section className="mt-[150px] w-[80%] mx-auto">
-        <ul className="flex flex-wrap gap-5 items-center">
+        <ul className="flex flex-wrap gap-5">
           {products &&
             products.map((product) => (
               <ProductItem key={product.productId} product={product} />

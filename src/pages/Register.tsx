@@ -31,6 +31,7 @@ function Register() {
 
   const {userData, setUserData} = useContext(UserContext);
 
+  console.log(userData, "register");
   useEffect(() => {
     if (userData && userData.id) {
       navigate("/shop");
@@ -42,23 +43,32 @@ function Register() {
   async function handleSubmit(e: React.ChangeEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const {data} = await axios.post<AuthResponse>("/auth/register", formFields);
+    try {
+      const {data} = await axios.post<AuthResponse>(
+        "/auth/register",
+        formFields
+      );
+      const {token} = data;
 
-    // Store the token in localStorage
-    localStorage.setItem("token", data.token);
+      localStorage.setItem("token", token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const decodedToken: JwtPayload = jwtDecode(data.token);
 
-    const decodedToken: JwtPayload = jwtDecode(data.token);
+      setUserData({
+        id: decodedToken.id,
+        name,
+        surname,
+        email,
+        username,
+        address,
+        password: "",
+        role: "",
+      });
 
-    setUserData({
-      id: decodedToken.id,
-      name,
-      surname,
-      email,
-      username,
-      address,
-      password: "",
-      role: "",
-    });
+      console.log("Token set and user data updated");
+    } catch (error) {
+      console.error("Registration failed:", error);
+    }
   }
 
   function handleOnChange(e: React.ChangeEvent<HTMLInputElement>) {

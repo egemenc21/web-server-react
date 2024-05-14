@@ -14,7 +14,7 @@ function ProductItem({product}: ProductItemProps) {
     product;
   return (
     <li className="w-[23%] p-4 shadow-md">
-      <div className="relative w-[300px] h-[300px]">
+      <div className="relative max-w-[300px] h-[300px]">
         <img
           className="object-cover  w-full h-full"
           src={`http://localhost:8080/images/${imageUrl}`}

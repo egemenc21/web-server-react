@@ -31,7 +31,6 @@ interface ShoppingCartContextType {
   shoppingCartId: number | undefined;
   addItemToCart: (productId: number) => void;
   deleteItemFromCart: (cartItemId: number) => void;
-  clearItem: (cartItemId: number) => void;
   clearShoppingCart: (cartId: number) => Promise<void>;
   itemQuantity: number;
 }
@@ -40,7 +39,7 @@ const ShoppingCartContext = createContext<ShoppingCartContextType | undefined>(
   undefined
 );
 
-// eslint-disable-next-line react-refresh/only-export-components
+
 export const useShoppingCart = (): ShoppingCartContextType => {
   const context = useContext(ShoppingCartContext);
   if (!context) {
@@ -63,10 +62,10 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
       const response = await axios.get(`/cart/${userId}`);
       console.log(response, userId, "shopping cart context");
       const shoppingCart: ShoppingCart = response.data;
-
+      console.log({shoppingCart})
       setCartItems(shoppingCart.cartItems);
       setShoppingCartId(shoppingCart.shoppingCartId);
-      // Use the shopping cart data as needed, e.g., update context state
+
     } catch (error) {
       console.error("Error fetching shopping cart:", error);
     }
@@ -76,18 +75,18 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
     if (userData && userData.id) {
       fetchShoppingCart(userData.id);
     }
-  }, [userData]); // Trigger the effect only when userId changes
+  }, [userData]); 
 
   const addItemToCart = async (productId: number) => {
     try {
-      // Check if the product already exists in the cart
+
       const existingCartItem = cartItems.find(
         (item) => item.product.productId === productId
       );
 
       if (existingCartItem) {
         const incrementedQuantity = existingCartItem.quantity + 1;
-        // If the product exists, update the quantity
+       
 
         await axios.put(
           `/cart-item/updateQuantity/${existingCartItem.cartItemId}?quantity=${incrementedQuantity}`,
@@ -95,12 +94,12 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
           {
             headers: {
               "Content-Type": "application/json",
-              // Include any authorization headers or other required headers
+         
             },
           }
         );
       } else {
-        // If the product does not exist, create a new cart item
+       
         const newCartItemRes = await axios.post(
           `/cart-item/add/${userData?.id}`,
           {
@@ -110,7 +109,7 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
           {
             headers: {
               "Content-Type": "application/json",
-              // Include any authorization headers or other required headers
+          
             },
           }
         );
@@ -118,7 +117,7 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
       }
 
       if (userData)
-        // Update the local state with the updated cart items
+    
         fetchShoppingCart(userData?.id);
     } catch (error) {
       console.error("Error adding item to cart:", error);
@@ -129,7 +128,7 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
   const deleteItemFromCart = async (cartItemId: number) => {
     try {
       await axios.delete(`/cart-item/delete/${cartItemId}`);
-      // Update the local state to remove the deleted item from cartItems
+   
       setCartItems((prevCartItems) =>
         prevCartItems.filter((item) => item.cartItemId !== cartItemId)
       );
@@ -137,21 +136,17 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
       console.error("Error deleting item from cart:", error);
     }
   };
-  
 
-  const clearItem = (cartItemId: number) => {
-    // Logic to clear item from cart
-  };
 
   const clearShoppingCart = async (cartId: number) => {
     try {
       await axios.delete(`/cart-item/deleteAll/${cartId}`, {
         headers: {
           "Content-Type": "application/json",
-          // Include any authorization headers or other required headers
+      
         },
       });
-      setCartItems([]); // Update the local state to clear the cart items
+      setCartItems([]); 
     } catch (error) {
       console.error("Error clearing shopping cart:", error);
     }
@@ -164,7 +159,7 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
         addItemToCart,
         shoppingCartId,
         deleteItemFromCart,
-        clearItem,
+    
         clearShoppingCart,
         itemQuantity,
       }}

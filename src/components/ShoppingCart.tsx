@@ -1,13 +1,15 @@
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useShoppingCart} from "../context/ShoppingCart";
 import Button, {BUTTON_TYPE_CLASSES} from "./Button";
 
 function ShoppingCart() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   const {cartItems, shoppingCartId, clearShoppingCart} = useShoppingCart();
   console.log(cartItems, "shopping cart component");
 
   const handleDelete = async () => {
+ 
     if (shoppingCartId) clearShoppingCart(shoppingCartId);
   };
 
@@ -46,7 +48,7 @@ function ShoppingCart() {
 
         <Button
           buttonType={BUTTON_TYPE_CLASSES.base}
-          onClick={()=> navigate('/checkout')}
+          onClick={() => navigate("/checkout")}
         >
           Go to checkout
         </Button>

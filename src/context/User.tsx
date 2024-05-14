@@ -1,7 +1,7 @@
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import {createContext, useEffect, useState} from "react";
-import { JwtPayload } from "../pages/Register";
+import {JwtPayload} from "../pages/Register";
 
 export interface UserProps {
   id: number;
@@ -11,13 +11,14 @@ export interface UserProps {
   password: string;
   email: string;
   address: string;
-  role:string
+  role: string;
 }
 
 interface UserContextProps {
   userData: UserProps | null;
   setUserData: React.Dispatch<React.SetStateAction<UserProps | null>>;
-  logout: () => void
+  logout: () => void;
+  token: string;
 }
 
 export const defaultUserData: UserProps = {
@@ -28,28 +29,39 @@ export const defaultUserData: UserProps = {
   password: "",
   email: "",
   address: "",
-  role:""
+  role: "",
 };
 
 export const UserContext = createContext<UserContextProps>({
   userData: defaultUserData,
   setUserData: () => {},
-  logout: () => {}
+  logout: () => {},
+  token: "",
 });
 
 function UserProvider({children}: {children: React.ReactNode}) {
   const [userData, setUserData] = useState<UserProps | null>(null);
+  const [token, setToken] = useState("");
 
   //User data is fetched from the token after refresh
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     if (token) {
+      setToken(token);
       const decodedToken: JwtPayload = jwtDecode(token);
-      
+
       axios.get(`/user/${decodedToken.id}`).then((response) => {
-        console.log(response, "usertsx")
-        const { userId, username, name, surname, password, email, address, role } = response.data;
+        const {
+          userId,
+          username,
+          name,
+          surname,
+          password,
+          email,
+          address,
+          role,
+        } = response.data;
 
         setUserData({
           id: userId,
@@ -61,18 +73,17 @@ function UserProvider({children}: {children: React.ReactNode}) {
           address,
           role,
         });
-      
       });
     }
   }, []);
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setUserData(null);
   };
 
   return (
-    <UserContext.Provider value={{userData, setUserData, logout}}>
+    <UserContext.Provider value={{userData, setUserData, logout, token}}>
       {children}
     </UserContext.Provider>
   );
