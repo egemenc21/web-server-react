@@ -1,6 +1,7 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import axios from "axios";
 import {Product} from "../mock-data/products";
+import {UserContext} from "./User";
 
 interface User {
   userId: number;
@@ -28,17 +29,18 @@ export interface CartItem {
 interface ShoppingCartContextType {
   cartItems: CartItem[];
   shoppingCartId: number | undefined;
-  addItemToCart: (productId: number, userId: number) => void;
+  addItemToCart: (productId: number) => void;
   deleteItemFromCart: (cartItemId: number) => void;
   clearItem: (cartItemId: number) => void;
   clearShoppingCart: (cartId: number) => Promise<void>;
-  itemQuantity: number
+  itemQuantity: number;
 }
 
 const ShoppingCartContext = createContext<ShoppingCartContextType | undefined>(
   undefined
 );
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useShoppingCart = (): ShoppingCartContextType => {
   const context = useContext(ShoppingCartContext);
   if (!context) {
@@ -53,10 +55,13 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [shoppingCartId, setShoppingCartId] = useState<number>();
   const [itemQuantity, setQuantity] = useState(0);
+  const {userData} = useContext(UserContext);
 
   const fetchShoppingCart = async (userId: number) => {
     try {
+      console.log(userId);
       const response = await axios.get(`/cart/${userId}`);
+      console.log(response, userId, "shopping cart context");
       const shoppingCart: ShoppingCart = response.data;
 
       setCartItems(shoppingCart.cartItems);
@@ -67,10 +72,13 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
     }
   };
   useEffect(() => {
-    fetchShoppingCart(1);
-  }, []); // Trigger the effect only when userId changes
+    console.log(userData?.id);
+    if (userData && userData.id) {
+      fetchShoppingCart(userData.id);
+    }
+  }, [userData]); // Trigger the effect only when userId changes
 
-  const addItemToCart = async (productId: number, userId: number) => {
+  const addItemToCart = async (productId: number) => {
     try {
       // Check if the product already exists in the cart
       const existingCartItem = cartItems.find(
@@ -93,8 +101,8 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
         );
       } else {
         // If the product does not exist, create a new cart item
-        await axios.post(
-          `/cart-item/add/${userId}`,
+        const newCartItemRes = await axios.post(
+          `/cart-item/add/${userData?.id}`,
           {
             productId: productId,
             quantity: 1,
@@ -106,10 +114,12 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
             },
           }
         );
+        console.log(newCartItemRes.data, "new item")
       }
 
-      // Update the local state with the updated cart items
-      fetchShoppingCart(userId);
+      if (userData)
+        // Update the local state with the updated cart items
+        fetchShoppingCart(userData?.id);
     } catch (error) {
       console.error("Error adding item to cart:", error);
     }
@@ -147,7 +157,7 @@ const ShoppingCartProvider = ({children}: {children: React.ReactNode}) => {
         deleteItemFromCart,
         clearItem,
         clearShoppingCart,
-        itemQuantity
+        itemQuantity,
       }}
     >
       {children}

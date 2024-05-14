@@ -4,37 +4,21 @@ import SignIn from "./pages/SignIn";
 import axios from "axios";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
-
+import Register from "./pages/Register";
+import {useEffect} from "react";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:8080";
   axios.defaults.withCredentials = true;
 
-// const user = {
-//   username: 'john_doe',
-//   name: 'John',
-//   surname: 'Doe',
-//   password: '123456',
-//   email: 'john.doe@example.com',
-//   address: '123 Main St, Anytown, USA',
-// };
+  // Axios interceptor to add Authorization header
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-// const createUser = async () => {
-//   try {
-//     const response = await axios.post('/user/add', user, {
-//       headers: {
-//         'Content-Type': 'application/json',
-//         // Include any other headers if required
-//       },
-//     });
-//     console.log('User created successfully:', response.data);
-//   } catch (error) {
-//     console.error('Error creating user:', error);
-//   }
-// };
-
-// // Call the function to create the user
-// createUser();
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
+  }, []);
 
   return (
     <>
@@ -42,6 +26,7 @@ function App() {
         <Route path="/" element={<SignIn />} />
         <Route path="/dashboard" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </>
   );

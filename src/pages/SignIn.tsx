@@ -3,6 +3,9 @@ import {Link, useNavigate} from "react-router-dom";
 import {UserContext} from "../context/User";
 import axios from "axios";
 import Button, {BUTTON_TYPE_CLASSES} from "../components/Button";
+import {AuthResponse} from "./Register";
+import {JwtPayload} from "jsonwebtoken";
+import {jwtDecode} from "jwt-decode";
 
 const defaultFormFields = {
   email: "",
@@ -16,17 +19,32 @@ function SignIn() {
   const {userData, setUserData} = useContext(UserContext);
 
   useEffect(() => {
-    console.log(userData)
-    if (userData && userData.id) {
+    console.log(userData, "signinpage");
+    if (userData) {
       navigate("/dashboard");
     }
-  }, [userData, navigate]);
+  }, [userData]);
 
   async function handleSubmit(e: React.ChangeEvent<HTMLFormElement>) {
     e.preventDefault();
-    const {data} = await axios.post("/sign-in", formFields);
-    setUserData(data);
-    console.log(data)
+    const {data} = await axios.post<AuthResponse>(
+      "/auth/authenticate",
+      formFields
+    );
+    const {token} = data;
+
+    localStorage.setItem("token", token);
+
+    if (token) {
+      const decodedToken: JwtPayload = jwtDecode(token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      axios.get(`/user/${decodedToken.id}` ).then((response) => {
+        setUserData(response.data);
+        console.log(response.data);
+      });
+    }
+    console.log(data);
   }
 
   function handleOnChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -59,7 +77,7 @@ function SignIn() {
           className="p-3 rounded-lg"
           onChange={handleOnChange}
         />
-        <Button type="submit" buttonType={BUTTON_TYPE_CLASSES.base}>          
+        <Button type="submit" buttonType={BUTTON_TYPE_CLASSES.base}>
           Sign in
         </Button>
       </form>

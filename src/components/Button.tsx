@@ -18,7 +18,7 @@ function BaseButton({
 }: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
-      className={cn("p-4 bg-primary text-white rounded-lg", className)}  
+      className={cn("p-4 bg-primary text-quaternary text-white rounded-lg", className)}  
       onClick={onClick}
       type={type}
     >

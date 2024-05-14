@@ -1,5 +1,7 @@
 import axios from "axios";
-import {createContext, useState} from "react";
+import { jwtDecode } from "jwt-decode";
+import {createContext, useEffect, useState} from "react";
+import { JwtPayload } from "../pages/Register";
 
 export interface UserProps {
   id: number;
@@ -9,14 +11,16 @@ export interface UserProps {
   password: string;
   email: string;
   address: string;
+  role:string
 }
 
 interface UserContextProps {
   userData: UserProps | null;
   setUserData: React.Dispatch<React.SetStateAction<UserProps | null>>;
+  logout: () => void
 }
 
-const defaultUserData: UserProps = {
+export const defaultUserData: UserProps = {
   id: 0,
   username: "",
   name: "",
@@ -24,26 +28,51 @@ const defaultUserData: UserProps = {
   password: "",
   email: "",
   address: "",
+  role:""
 };
 
 export const UserContext = createContext<UserContextProps>({
   userData: defaultUserData,
   setUserData: () => {},
+  logout: () => {}
 });
 
 function UserProvider({children}: {children: React.ReactNode}) {
   const [userData, setUserData] = useState<UserProps | null>(null);
 
   //User data is fetched from the token after refresh
-//   useEffect(() => {
-//     axios.get("/me").then((response) => {
-//       setUserData(response.data);
-//       console.log(response.data);
-//     });
-//   }, []);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      const decodedToken: JwtPayload = jwtDecode(token);
+      
+      axios.get(`/user/${decodedToken.id}`).then((response) => {
+        console.log(response, "usertsx")
+        const { userId, username, name, surname, password, email, address, role } = response.data;
+
+        setUserData({
+          id: userId,
+          username,
+          name,
+          surname,
+          password,
+          email,
+          address,
+          role,
+        });
+      
+      });
+    }
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setUserData(null);
+  };
 
   return (
-    <UserContext.Provider value={{userData, setUserData}}>
+    <UserContext.Provider value={{userData, setUserData, logout}}>
       {children}
     </UserContext.Provider>
   );

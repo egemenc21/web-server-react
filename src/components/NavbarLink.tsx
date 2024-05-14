@@ -11,7 +11,7 @@ function NavbarLink({href, title, onClick}: NavbarLinkProps) {
     <li
       key={href}
       onClick={onClick}
-      className=" dark:hover:text-tertiary hover:text-quaternary transition-colors dark:text-secondary text-primary max-md:hover:text-tertiary max-md:text-secondary  pb-1 h-8 font-medium  "
+      className="  hover:text-quaternary transition-colors dark:text-secondary text-primary max-md:hover:text-tertiary max-md:text-secondary  pb-1 h-8 font-medium  "
     >
       <Link to={href} className="">
         {title}

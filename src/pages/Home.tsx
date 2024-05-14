@@ -1,8 +1,18 @@
 // interface HomeProps {}
 
+import {useNavigate} from "react-router-dom";
 import Navbar from "../components/Navbar";
+import {useContext, useEffect} from "react";
+import {UserContext} from "../context/User";
 
 function Home() {
+  const {userData} = useContext(UserContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!userData) {
+      navigate("/");
+    }
+  }, [navigate, userData]);
   return (
     <>
       <Navbar />
