@@ -13,7 +13,7 @@ function ProductItem({product}: ProductItemProps) {
   const {productId, productName, description, quantity, price, imageUrl} =
     product;
   return (
-    <li className="w-[23%] p-4 shadow-md">
+    <li className="w-[300px] p-4 shadow-md">
       <div className="relative max-w-[300px] h-[300px]">
         <img
           className="object-cover  w-full h-full"
